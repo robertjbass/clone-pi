@@ -1,0 +1,88 @@
+#!/bin/bash
+
+PWM_PATH="/sys/class/hwmon/hwmon2/pwm1"
+ENABLE_PATH="/sys/class/hwmon/hwmon2/pwm1_enable"
+
+usage() {
+    echo "Usage: fan <command> [value]"
+    echo ""
+    echo "Commands:"
+    echo "  on [speed]    Turn fan on (speed: 0-255, default: 255)"
+    echo "  off           Turn fan off"
+    echo "  auto          Set fan to automatic thermal control"
+    echo "  speed <0-255> Set fan speed manually"
+    echo "  lights on     Enable RGB color cycling"
+    echo "  lights off    Disable RGB lights (fan goes to auto mode)"
+    echo "  status        Show current fan status"
+    echo ""
+    echo "Examples:"
+    echo "  fan on        # Full speed"
+    echo "  fan on 128    # Half speed"
+    echo "  fan off"
+    echo "  fan lights on"
+    echo "  fan auto"
+}
+
+get_status() {
+    local enable=$(cat "$ENABLE_PATH" 2>/dev/null)
+    local pwm=$(cat "$PWM_PATH" 2>/dev/null)
+    local rpm=$(cat /sys/class/hwmon/hwmon2/fan1_input 2>/dev/null)
+    local temp=$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null)
+
+    echo "Fan Status:"
+    echo "  Mode: $([ "$enable" = "1" ] && echo "manual" || echo "auto")"
+    echo "  PWM:  $pwm / 255"
+    echo "  RPM:  $rpm"
+    echo "  Temp: $((temp / 1000))°C"
+    echo "  RGB:  $([ "$enable" = "1" ] && echo "cycling" || echo "off/static")"
+}
+
+case "$1" in
+    on)
+        speed="${2:-255}"
+        echo 1 | sudo tee "$ENABLE_PATH" > /dev/null
+        echo "$speed" | sudo tee "$PWM_PATH" > /dev/null
+        echo "Fan on (speed: $speed)"
+        ;;
+    off)
+        echo 1 | sudo tee "$ENABLE_PATH" > /dev/null
+        echo 0 | sudo tee "$PWM_PATH" > /dev/null
+        echo "Fan off"
+        ;;
+    auto)
+        echo 2 | sudo tee "$ENABLE_PATH" > /dev/null
+        echo "Fan set to automatic mode"
+        ;;
+    speed)
+        if [ -z "$2" ]; then
+            echo "Error: speed requires a value (0-255)"
+            exit 1
+        fi
+        echo 1 | sudo tee "$ENABLE_PATH" > /dev/null
+        echo "$2" | sudo tee "$PWM_PATH" > /dev/null
+        echo "Fan speed set to $2"
+        ;;
+    lights)
+        case "$2" in
+            on)
+                echo 1 | sudo tee "$ENABLE_PATH" > /dev/null
+                echo "RGB lights cycling"
+                ;;
+            off)
+                echo 2 | sudo tee "$ENABLE_PATH" > /dev/null
+                echo "RGB lights off (auto mode)"
+                ;;
+            *)
+                echo "Usage: fan lights <on|off>"
+                exit 1
+                ;;
+        esac
+        ;;
+    status)
+        get_status
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
+esac

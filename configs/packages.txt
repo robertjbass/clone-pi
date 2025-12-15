@@ -1,0 +1,61 @@
+# Core system packages to install on RPi 4
+# These are the essential packages that differ from base Armbian
+# Generated from RPi 5 system
+
+# Desktop environment
+gnome-core
+gnome-tweaks
+gnome-terminal
+
+# Terminals
+alacritty
+
+# Browsers
+chromium
+
+# Development tools
+build-essential
+git
+gh
+curl
+wget
+jq
+
+# Editors
+codium
+
+# Shell tools
+zsh
+zsh-common
+fzf
+eza
+zoxide
+ripgrep
+htop
+pv
+
+# Fun/utility
+figlet
+toilet
+
+# Screenshot
+flameshot
+
+# Launcher
+ulauncher
+
+# Printing
+cups
+
+# File sharing
+samba
+
+# Fonts
+fonts-dejavu-core
+fonts-dejavu-mono
+
+# Python
+python3
+python3-pip
+python3-venv
+pipx

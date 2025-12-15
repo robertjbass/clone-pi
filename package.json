@@ -1,0 +1,19 @@
+{
+  "name": "clone-pi",
+  "version": "1.0.0",
+  "description": "Clone Raspberry Pi 5 environment to Raspberry Pi 4",
+  "type": "module",
+  "scripts": {
+    "setup": "tsx src/install.ts",
+    "setup:dry-run": "tsx src/install.ts --dry-run"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "ora": "^8.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

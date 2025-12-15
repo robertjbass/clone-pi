@@ -1,0 +1,14 @@
+# Ghostty Configuration
+
+# Quick Terminal - Toggle with Super (Windows key) + T
+# The quick terminal slides down from the top of the screen
+# The 'global:' prefix makes this work system-wide (even when Ghostty is not focused)
+keybind = global:super+t=toggle_quick_terminal
+
+# New Tab - Ctrl+T and Alt+T
+keybind = ctrl+t=new_tab
+keybind = alt+t=new_tab
+
+# New Window - Ctrl+N and Alt+N
+keybind = ctrl+n=new_window
+keybind = alt+n=new_window

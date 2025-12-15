@@ -1,0 +1,84 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage & testing
+coverage/
+.nyc_output/
+.coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor directories & files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+*.sublime-*
+
+# Environment files (secrets)
+.env
+.env.*
+!.env.example
+
+# Claude Code
+.claude/
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Bash script artifacts
+*.bak
+*.orig
+nohup.out
+
+# SSH keys (never commit these)
+id_rsa
+id_rsa.pub
+*.pem
+*.key
+
+# Archives
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.rar
+
+# Optional npm cache
+.npm/
+
+# Optional eslint cache
+.eslintcache
+
+# TypeScript cache
+*.tsbuildinfo

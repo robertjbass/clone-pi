@@ -1,0 +1,19 @@
+# Alacritty configuration
+# This ensures single-instance behavior
+
+[window]
+# Window decorations
+decorations = "full"
+
+# Startup mode
+startup_mode = "Windowed"
+
+[general]
+# Import additional config files
+import = []
+
+# Keyboard bindings
+[[keyboard.bindings]]
+key = "N"
+mods = "Control"
+action = "SpawnNewInstance"
