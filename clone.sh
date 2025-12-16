@@ -128,6 +128,18 @@ install_curl() {
     log_success "curl installed"
 }
 
+install_unzip() {
+    if command -v unzip &> /dev/null; then
+        log_success "unzip is already installed"
+        return 0
+    fi
+
+    log_info "Installing unzip..."
+    sudo apt update
+    sudo apt install -y unzip
+    log_success "unzip installed"
+}
+
 install_fnm() {
     FNM_PATH="$HOME/.local/share/fnm"
 
@@ -227,6 +239,7 @@ main() {
 
     # Install prerequisites
     install_curl
+    install_unzip
     install_git
     install_fnm
     install_node
