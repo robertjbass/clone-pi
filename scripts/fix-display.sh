@@ -3,6 +3,9 @@
 
 set -e
 
+echo "Fixing any interrupted package installations..."
+sudo dpkg --configure -a
+
 echo "Installing GNOME display manager..."
 sudo apt update && sudo apt install -y gnome-core gdm3
 

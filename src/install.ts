@@ -142,8 +142,17 @@ async function updateSystem(config: Config): Promise<StepResult> {
   logStep("Updating system packages");
 
   if (config.dryRun) {
-    logSuccess("Would run apt update && apt upgrade");
+    logSuccess("Would run dpkg --configure -a && apt update && apt upgrade");
     return { success: true, message: "Dry run", skipped: true };
+  }
+
+  // Fix any interrupted package installations
+  const spinner0 = ora("Fixing any interrupted package installations...").start();
+  try {
+    exec("sudo dpkg --configure -a", { silent: true });
+    spinner0.succeed("Package configuration fixed");
+  } catch (error) {
+    spinner0.warn("dpkg configure had issues - continuing anyway");
   }
 
   const spinner = ora("Updating package lists...").start();
