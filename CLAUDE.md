@@ -48,4 +48,4 @@ npm run setup:dry-run
 
 - ARM64 (aarch64) Raspberry Pi running Armbian
 - Debian Trixie expected (warnings shown for other versions)
-- Installs: ZSH + Oh-My-Zsh + Powerlevel10k, FNM + Node.js v24, UV (Python), pipx packages, Claude CLI
+- Installs: ZSH + Oh-My-Zsh + Powerlevel10k, FNM + Node.js v24, UV (Python), Claude CLI

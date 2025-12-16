@@ -138,6 +138,35 @@ async function checkSystem(): Promise<StepResult> {
   return { success: true, message: "System check passed" };
 }
 
+async function updateSystem(config: Config): Promise<StepResult> {
+  logStep("Updating system packages");
+
+  if (config.dryRun) {
+    logSuccess("Would run apt update && apt upgrade");
+    return { success: true, message: "Dry run", skipped: true };
+  }
+
+  const spinner = ora("Updating package lists...").start();
+  try {
+    exec("sudo apt update", { silent: true });
+    spinner.succeed("Package lists updated");
+  } catch (error) {
+    spinner.fail("Failed to update package lists");
+    return { success: false, message: "apt update failed" };
+  }
+
+  const spinner2 = ora("Upgrading installed packages...").start();
+  try {
+    exec("sudo apt upgrade -y", { silent: true });
+    spinner2.succeed("System packages upgraded");
+  } catch (error) {
+    spinner2.fail("Failed to upgrade packages");
+    return { success: false, message: "apt upgrade failed" };
+  }
+
+  return { success: true, message: "System updated" };
+}
+
 async function installAptPackages(config: Config): Promise<StepResult> {
   logStep("Installing APT packages");
 
@@ -163,21 +192,12 @@ async function installAptPackages(config: Config): Promise<StepResult> {
     return { success: true, message: "Dry run - no packages installed", skipped: true };
   }
 
-  const spinner = ora("Updating package lists...").start();
-  try {
-    exec("sudo apt update", { silent: true });
-    spinner.succeed("Package lists updated");
-  } catch (error) {
-    spinner.fail("Failed to update package lists");
-    return { success: false, message: "apt update failed" };
-  }
-
-  const spinner2 = ora(`Installing ${packages.length} packages...`).start();
+  const spinner = ora(`Installing ${packages.length} packages...`).start();
   try {
     exec(`sudo apt install -y ${packages.join(" ")}`, { silent: true });
-    spinner2.succeed(`Installed ${packages.length} packages`);
+    spinner.succeed(`Installed ${packages.length} packages`);
   } catch (error: any) {
-    spinner2.fail("Some packages failed to install");
+    spinner.fail("Some packages failed to install");
     logWarning("Continuing anyway - some packages may need manual installation");
   }
 
@@ -192,15 +212,39 @@ async function installZsh(config: Config): Promise<StepResult> {
     return { success: true, message: "Dry run", skipped: true };
   }
 
+  // Ensure zsh is installed
+  if (!commandExists("zsh")) {
+    const spinner = ora("Installing zsh...").start();
+    try {
+      exec("sudo apt install -y zsh", { silent: true });
+      spinner.succeed("zsh installed");
+    } catch (error) {
+      spinner.fail("Failed to install zsh");
+      return { success: false, message: "zsh installation failed" };
+    }
+  }
+
   // Install Oh-My-Zsh
   const omzDir = join(HOME, ".oh-my-zsh");
   if (!fileExists(omzDir)) {
+    // Temporarily move existing .zshrc to prevent conflicts
+    const zshrcPath = join(HOME, ".zshrc");
+    const zshrcBackup = join(HOME, ".zshrc.pre-omz-backup");
+    if (fileExists(zshrcPath)) {
+      copyFile(zshrcPath, zshrcBackup);
+      execSilent(`rm "${zshrcPath}"`);
+    }
+
     const spinner = ora("Installing Oh-My-Zsh...").start();
     try {
       exec('sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended', { silent: true });
       spinner.succeed("Oh-My-Zsh installed");
     } catch (error) {
       spinner.fail("Failed to install Oh-My-Zsh");
+      // Restore backup if it exists
+      if (fileExists(zshrcBackup)) {
+        copyFile(zshrcBackup, zshrcPath);
+      }
       return { success: false, message: "Oh-My-Zsh installation failed" };
     }
   } else {
@@ -325,48 +369,6 @@ async function installUv(config: Config): Promise<StepResult> {
   }
 
   return { success: true, message: "UV installed" };
-}
-
-async function installPipxPackages(config: Config): Promise<StepResult> {
-  logStep("Installing pipx packages");
-
-  if (config.dryRun) {
-    logSuccess("Would install: llm, oterm");
-    return { success: true, message: "Dry run", skipped: true };
-  }
-
-  const packages = ["llm", "oterm"];
-
-  for (const pkg of packages) {
-    const spinner = ora(`Installing ${pkg}...`).start();
-    try {
-      exec(`pipx install ${pkg}`, { silent: true });
-      spinner.succeed(`${pkg} installed`);
-    } catch (error) {
-      spinner.warn(`${pkg} may already be installed or failed`);
-    }
-  }
-
-  return { success: true, message: "pipx packages installed" };
-}
-
-async function installAiderChat(config: Config): Promise<StepResult> {
-  logStep("Installing aider-chat via UV");
-
-  if (config.dryRun) {
-    logSuccess("Would install aider-chat");
-    return { success: true, message: "Dry run", skipped: true };
-  }
-
-  const spinner = ora("Installing aider-chat...").start();
-  try {
-    exec(`bash -c 'export PATH="$HOME/.local/bin:$PATH" && uv tool install aider-chat'`, { silent: true });
-    spinner.succeed("aider-chat installed");
-  } catch (error) {
-    spinner.warn("aider-chat may already be installed or failed");
-  }
-
-  return { success: true, message: "aider-chat setup complete" };
 }
 
 async function installClaudeCli(config: Config): Promise<StepResult> {
@@ -584,7 +586,8 @@ async function setupGitConfig(config: Config): Promise<StepResult> {
 `;
 
   writeFileSync(gitConfigPath, defaultConfig);
-  logSuccess("Basic git config created - run 'git config --global user.name' and 'git config --global user.email' to set your identity");
+  logSuccess("Basic git config created - set your identity with:");
+  log(chalk.gray('    git config --global user.name "Your Name" && git config --global user.email "you@example.com"'));
 
   return { success: true, message: "Git config created" };
 }
@@ -600,6 +603,13 @@ async function enableServices(config: Config): Promise<StepResult> {
   const services = ["ssh", "smbd", "nmbd", "cups"];
 
   for (const service of services) {
+    // Check if service exists before trying to enable it
+    const serviceExists = execSilent(`systemctl list-unit-files ${service}.service`).includes(service);
+    if (!serviceExists) {
+      logWarning(`${service} not installed - skipping`);
+      continue;
+    }
+
     const spinner = ora(`Enabling ${service}...`).start();
     try {
       exec(`sudo systemctl enable ${service}`, { silent: true });
@@ -637,8 +647,7 @@ async function printSummary(results: Map<string, StepResult>) {
   console.log("  1. Log out and log back in (or reboot) for shell changes to take effect");
   console.log("  2. Run 'p10k configure' to customize your prompt");
   console.log("  3. Set up your git identity:");
-  console.log("     git config --global user.name 'Your Name'");
-  console.log("     git config --global user.email 'your@email.com'");
+  console.log('     git config --global user.name "Your Name" && git config --global user.email "you@example.com"');
   console.log("  4. Authenticate GitHub CLI: gh auth login");
   console.log("  5. Authenticate Claude CLI: claude");
   console.log("");
@@ -675,12 +684,11 @@ async function main() {
   // Run installation steps
   const steps: [string, () => Promise<StepResult>][] = [
     ["System Check", () => checkSystem()],
+    ["System Update", () => updateSystem(config)],
     ["APT Packages", () => installAptPackages(config)],
     ["ZSH Setup", () => installZsh(config)],
     ["FNM (Node.js)", () => installFnm(config)],
     ["UV (Python)", () => installUv(config)],
-    ["pipx Packages", () => installPipxPackages(config)],
-    ["aider-chat", () => installAiderChat(config)],
     ["Claude CLI", () => installClaudeCli(config)],
     ["Ghostty", () => installGhostty(config)],
     ["Fonts", () => installFonts(config)],

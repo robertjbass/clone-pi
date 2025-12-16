@@ -25,8 +25,6 @@ Clone your Raspberry Pi 5 Armbian environment to a Raspberry Pi 4.
 
 - FNM (Fast Node Manager) with Node.js v24
 - UV (Python package manager)
-- pipx with llm and oterm
-- aider-chat
 - Claude CLI
 
 ### Configurations
@@ -98,8 +96,7 @@ After the installation completes:
 3. **Set up Git identity**:
 
    ```bash
-   git config --global user.name "Your Name"
-   git config --global user.email "your@email.com"
+   git config --global user.name "Your Name" && git config --global user.email "you@example.com"
    ```
 
 4. **Authenticate GitHub CLI**:
