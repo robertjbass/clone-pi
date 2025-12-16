@@ -4,6 +4,7 @@
 
 # Desktop environment
 gnome-core
+gdm3
 gnome-tweaks
 gnome-terminal
 

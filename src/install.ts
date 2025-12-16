@@ -598,6 +598,47 @@ async function setupGitConfig(config: Config): Promise<StepResult> {
   return { success: true, message: "Git config created" };
 }
 
+async function enableDesktop(config: Config): Promise<StepResult> {
+  logStep("Enabling GNOME desktop");
+
+  if (config.dryRun) {
+    logSuccess("Would set graphical target and enable gdm3");
+    return { success: true, message: "Dry run", skipped: true };
+  }
+
+  // Check if gdm3 is installed
+  if (!commandExists("gdm3") && !fileExists("/usr/sbin/gdm3")) {
+    const spinner = ora("Installing gdm3...").start();
+    try {
+      exec("sudo apt install -y gdm3", { silent: true });
+      spinner.succeed("gdm3 installed");
+    } catch (error) {
+      spinner.fail("Failed to install gdm3");
+      logWarning("Run manually: sudo apt install -y gdm3");
+    }
+  }
+
+  // Set graphical target
+  const spinner = ora("Setting graphical target...").start();
+  try {
+    exec("sudo systemctl set-default graphical.target", { silent: true });
+    spinner.succeed("Graphical target set");
+  } catch (error) {
+    spinner.warn("Could not set graphical target");
+  }
+
+  // Enable gdm3
+  const spinner2 = ora("Enabling gdm3...").start();
+  try {
+    exec("sudo systemctl enable gdm3", { silent: true });
+    spinner2.succeed("gdm3 enabled");
+  } catch (error) {
+    spinner2.warn("Could not enable gdm3");
+  }
+
+  return { success: true, message: "Desktop configured" };
+}
+
 async function enableServices(config: Config): Promise<StepResult> {
   logStep("Enabling system services");
 
@@ -705,6 +746,7 @@ async function main() {
     ["Custom Scripts", () => installCustomScripts(config)],
     ["dconf Settings", () => applyDconfSettings(config)],
     ["Git Config", () => setupGitConfig(config)],
+    ["GNOME Desktop", () => enableDesktop(config)],
     ["System Services", () => enableServices(config)],
   ];
 
