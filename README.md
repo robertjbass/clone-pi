@@ -5,6 +5,7 @@ Clone your Raspberry Pi 5 Armbian environment to a Raspberry Pi 4.
 ## What Gets Cloned
 
 ### System Packages
+
 - GNOME desktop environment
 - Alacritty terminal
 - Chromium browser
@@ -13,6 +14,7 @@ Clone your Raspberry Pi 5 Armbian environment to a Raspberry Pi 4.
 - Shell utilities (zsh, fzf, eza, zoxide, ripgrep, htop)
 
 ### Shell Environment
+
 - ZSH with Oh-My-Zsh
 - Powerlevel10k theme
 - zsh-autosuggestions
@@ -20,6 +22,7 @@ Clone your Raspberry Pi 5 Armbian environment to a Raspberry Pi 4.
 - Custom functions and aliases
 
 ### Development Tools
+
 - FNM (Fast Node Manager) with Node.js v24
 - UV (Python package manager)
 - pipx with llm and oterm
@@ -27,6 +30,7 @@ Clone your Raspberry Pi 5 Armbian environment to a Raspberry Pi 4.
 - Claude CLI
 
 ### Configurations
+
 - Alacritty terminal config
 - Ghostty terminal config
 - Ulauncher settings
@@ -34,11 +38,13 @@ Clone your Raspberry Pi 5 Armbian environment to a Raspberry Pi 4.
 - Git config (basic - you'll set your identity)
 
 ### Fonts
+
 - MesloLGS NF (for Powerlevel10k)
 
 ## Prerequisites
 
 On your new Raspberry Pi 4:
+
 1. Install Armbian (Debian Trixie recommended)
 2. Complete initial setup (username, password)
 3. Connect to the internet
@@ -51,7 +57,7 @@ On your new Raspberry Pi 4:
 sudo apt update && sudo apt install -y git
 
 # 2. Clone this repository
-git clone https://github.com/YOUR_USERNAME/clone-pi.git ~/dev/clone-pi
+git clone https://github.com/robertjbass/clone-pi.git ~/dev/clone-pi
 
 # 3. Run the installer
 cd ~/dev/clone-pi
@@ -84,17 +90,20 @@ After the installation completes:
 1. **Reboot** or log out and back in for shell changes to take effect
 
 2. **Configure Powerlevel10k** (optional):
+
    ```bash
    p10k configure
    ```
 
 3. **Set up Git identity**:
+
    ```bash
    git config --global user.name "Your Name"
    git config --global user.email "your@email.com"
    ```
 
 4. **Authenticate GitHub CLI**:
+
    ```bash
    gh auth login
    ```
@@ -107,12 +116,14 @@ After the installation completes:
 ## Hardware Notes
 
 ### RPi 5 vs RPi 4 Differences
+
 - Both use ARM64 (aarch64) architecture
 - Both can run Armbian with the same packages
 - Fan control script path may differ (check `/sys/class/hwmon/`)
 - Performance will be lower on RPi 4
 
 ### What's NOT Cloned
+
 - Secrets and API keys (you'll need to re-authenticate services)
 - SSH keys (generate new ones or copy manually)
 - Ollama (excluded - install separately if needed)
@@ -149,26 +160,35 @@ clone-pi/
 ## Troubleshooting
 
 ### "Command not found" after installation
+
 Log out and back in, or run:
+
 ```bash
 source ~/.zshrc
 ```
 
 ### Packages failed to install
+
 Some packages may not be available. Run:
+
 ```bash
 sudo apt install -f
 ```
 
 ### Fonts not showing correctly
+
 Run:
+
 ```bash
 fc-cache -f
 ```
+
 Then restart your terminal.
 
 ### FNM/Node not working
+
 Make sure your shell config sources `.shell_common`:
+
 ```bash
 source ~/.shell_common
 ```
@@ -176,13 +196,17 @@ source ~/.shell_common
 ## Customization
 
 ### Adding more packages
+
 Edit `configs/packages.txt` - one package per line, comments start with `#`.
 
 ### Modifying shell config
+
 Edit `configs/zshrc` before running the installer.
 
 ### Changing GNOME settings
+
 Edit `configs/dconf-settings.ini` or export your current settings:
+
 ```bash
 dconf dump / > configs/dconf-settings.ini
 ```
@@ -190,4 +214,5 @@ dconf dump / > configs/dconf-settings.ini
 ## License
 
 MIT
+
 # clone-pi
