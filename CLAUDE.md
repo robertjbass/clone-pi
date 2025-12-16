@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Clone-pi is a tool that clones a Raspberry Pi 5 Armbian environment to a Raspberry Pi 4. It consists of a bash bootstrap script and a TypeScript installer that handles package installation, shell setup, configuration files, and developer tools.
+Clone-pi is a bootstrap tool for setting up Raspberry Pi devices running Armbian. It consists of a bash bootstrap script and a TypeScript installer that handles package installation, shell setup, configuration files, and developer tools.
 
 ## Commands
 

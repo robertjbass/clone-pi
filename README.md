@@ -1,8 +1,8 @@
-# Raspberry Pi Environment Cloner
+# Raspberry Pi Armbian Bootstrap
 
-Clone your Raspberry Pi 5 Armbian environment to a Raspberry Pi 4.
+The ideal starting point for your Raspberry Pi configuration.
 
-## What Gets Cloned
+## What Gets Installed
 
 ### System Packages
 
@@ -41,7 +41,7 @@ Clone your Raspberry Pi 5 Armbian environment to a Raspberry Pi 4.
 
 ## Prerequisites
 
-On your new Raspberry Pi 4:
+On your Raspberry Pi:
 
 1. Install Armbian (Debian Trixie recommended)
 2. Complete initial setup (username, password)
@@ -112,14 +112,13 @@ After the installation completes:
 
 ## Hardware Notes
 
-### RPi 5 vs RPi 4 Differences
+### Supported Devices
 
-- Both use ARM64 (aarch64) architecture
+- Raspberry Pi 4 and 5 (ARM64/aarch64)
 - Both can run Armbian with the same packages
 - Fan control script path may differ (check `/sys/class/hwmon/`)
-- Performance will be lower on RPi 4
 
-### What's NOT Cloned
+### What's NOT Installed
 
 - Secrets and API keys (you'll need to re-authenticate services)
 - SSH keys (generate new ones or copy manually)

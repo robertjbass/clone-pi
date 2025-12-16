@@ -1,9 +1,9 @@
 #!/bin/bash
 # ============================================================================
-# Raspberry Pi Environment Cloner - Bootstrap Script
+# Raspberry Pi Armbian Bootstrap
 # ============================================================================
-# This script bootstraps the environment cloning process.
-# Run this after a fresh Armbian installation on your RPi 4.
+# This script bootstraps your Raspberry Pi Armbian installation.
+# Run this after a fresh Armbian installation on your Raspberry Pi.
 #
 # Prerequisites:
 #   - Fresh Armbian installation
@@ -37,8 +37,8 @@ print_banner() {
     echo -e "${BLUE}"
     echo "  ╔═══════════════════════════════════════════════════════════╗"
     echo "  ║                                                           ║"
-    echo "  ║     Raspberry Pi Environment Cloner                       ║"
-    echo "  ║     Bootstrap Script                                      ║"
+    echo "  ║     Raspberry Pi Armbian Bootstrap                        ║"
+    echo "  ║     The ideal starting point for your RPi configuration   ║"
     echo "  ║                                                           ║"
     echo "  ╚═══════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
@@ -63,7 +63,7 @@ log_error() {
 show_help() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
-    echo "Bootstrap the Raspberry Pi environment cloning process."
+    echo "Bootstrap your Raspberry Pi Armbian installation."
     echo ""
     echo "Options:"
     echo "  --dry-run         Preview what will be done without making changes"

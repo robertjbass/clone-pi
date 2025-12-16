@@ -216,12 +216,18 @@ async function installZsh(config: Config): Promise<StepResult> {
   if (!commandExists("zsh")) {
     const spinner = ora("Installing zsh...").start();
     try {
-      exec("sudo apt install -y zsh", { silent: true });
+      exec("sudo apt update && sudo apt install -y zsh", { silent: true });
       spinner.succeed("zsh installed");
     } catch (error) {
       spinner.fail("Failed to install zsh");
-      return { success: false, message: "zsh installation failed" };
+      return { success: false, message: "zsh installation failed - run: sudo apt install -y zsh" };
     }
+  }
+
+  // Verify zsh is actually available
+  if (!commandExists("zsh")) {
+    logError("zsh is not available after installation attempt");
+    return { success: false, message: "zsh not found - run: sudo apt install -y zsh" };
   }
 
   // Install Oh-My-Zsh
@@ -661,8 +667,8 @@ async function main() {
   console.log(chalk.blue(`
   ╔═══════════════════════════════════════════════════════════╗
   ║                                                           ║
-  ║     Raspberry Pi Environment Cloner                       ║
-  ║     Clone RPi 5 environment to RPi 4                      ║
+  ║     Raspberry Pi Armbian Bootstrap                        ║
+  ║     The ideal starting point for your RPi configuration   ║
   ║                                                           ║
   ╚═══════════════════════════════════════════════════════════╝
   `));
