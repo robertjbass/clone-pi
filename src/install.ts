@@ -650,12 +650,15 @@ async function printSummary(results: Map<string, StepResult>) {
   }
 
   console.log(chalk.cyan("\nNext steps:"));
-  console.log("  1. Log out and log back in (or reboot) for shell changes to take effect");
-  console.log("  2. Run 'p10k configure' to customize your prompt");
+  console.log("  1. Reboot for shell and desktop changes to take effect:");
+  console.log(chalk.gray("     sudo reboot"));
+  console.log("  2. Run 'p10k configure' to customize your prompt (optional)");
   console.log("  3. Set up your git identity:");
-  console.log('     git config --global user.name "Your Name" && git config --global user.email "you@example.com"');
+  console.log(chalk.gray('     git config --global user.name "Your Name" && git config --global user.email "you@example.com"'));
   console.log("  4. Authenticate GitHub CLI: gh auth login");
   console.log("  5. Authenticate Claude CLI: claude");
+  console.log("");
+  console.log(chalk.yellow("Note: If connected to a display, the Pi will boot into GNOME desktop."));
   console.log("");
 }
 

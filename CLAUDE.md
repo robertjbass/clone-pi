@@ -10,16 +10,16 @@ Clone-pi is a bootstrap tool for setting up Raspberry Pi devices running Armbian
 
 ```bash
 # Run the full installer (bootstrap + TypeScript installer)
-./clone.sh
+./install.sh
 
 # Preview mode - see what would be done without making changes
-./clone.sh --dry-run
+./install.sh --dry-run
 
 # Skip APT package installation
-./clone.sh --skip-packages
+./install.sh --skip-packages
 
 # Skip configuration file copying
-./clone.sh --skip-configs
+./install.sh --skip-configs
 
 # Run TypeScript installer directly (after bootstrap)
 npm run setup
@@ -29,7 +29,7 @@ npm run setup:dry-run
 ## Architecture
 
 **Two-stage installation:**
-1. `clone.sh` - Bash bootstrap that installs prerequisites (curl, git, fnm, Node.js) then calls the TypeScript installer
+1. `install.sh` - Bash bootstrap that installs prerequisites (curl, git, unzip, fnm, Node.js) then calls the TypeScript installer
 2. `src/install.ts` - Main installer with 15 installation steps running sequentially, each returning a `StepResult`
 
 **Key patterns in install.ts:**

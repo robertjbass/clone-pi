@@ -41,12 +41,34 @@ The ideal starting point for your Raspberry Pi configuration.
 
 ## Prerequisites
 
+### Download Armbian
+
+Download Armbian for your Raspberry Pi:
+- **RPi 4:** https://www.armbian.com/rpi4b/
+- **RPi 5:** https://www.armbian.com/rpi5b/
+
+Choose the **Trixie Minimal** version - this installer will set up GNOME desktop for you.
+
+### Flash the Image
+
+Use one of these tools to flash the Armbian image to your SD card:
+
+- [Raspberry Pi Imager](https://www.raspberrypi.com/software/) (recommended)
+- [balenaEtcher](https://etcher.balena.io/)
+- [USBImager](https://bztsrc.gitlab.io/usbimager/)
+
+### Initial Setup
+
 On your Raspberry Pi:
 
-1. Install Armbian (Debian Trixie recommended)
+1. Boot from the SD card
 2. Complete initial setup (username, password)
 3. Connect to the internet
 4. Have sudo access
+
+### SSH Access (Optional)
+
+See [raspberry-pi-setup.md](raspberry-pi-setup.md) for instructions on setting up passwordless SSH access from your Mac or Linux machine.
 
 ## Quick Start
 
@@ -59,26 +81,26 @@ git clone https://github.com/robertjbass/clone-pi.git ~/dev/clone-pi
 
 # 3. Run the installer
 cd ~/dev/clone-pi
-./clone.sh
+./install.sh
 ```
 
 ## Usage Options
 
 ```bash
 # Full installation
-./clone.sh
+./install.sh
 
 # Preview what will be done (no changes made)
-./clone.sh --dry-run
+./install.sh --dry-run
 
 # Skip package installation (if you've already installed them)
-./clone.sh --skip-packages
+./install.sh --skip-packages
 
 # Skip config copying (only install software)
-./clone.sh --skip-configs
+./install.sh --skip-configs
 
 # Show help
-./clone.sh --help
+./install.sh --help
 ```
 
 ## Post-Installation Steps
@@ -129,7 +151,7 @@ After the installation completes:
 
 ```
 clone-pi/
-├── clone.sh              # Bootstrap script (run this)
+├── install.sh            # Bootstrap script (run this)
 ├── package.json          # npm dependencies
 ├── tsconfig.json         # TypeScript config
 ├── src/
