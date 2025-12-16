@@ -710,6 +710,17 @@ async function printSummary(results: Map<string, StepResult>) {
   console.log("");
   console.log(chalk.yellow("Note: If connected to a display, the Pi will boot into GNOME desktop."));
   console.log("");
+  console.log(chalk.cyan("If GNOME desktop doesn't start after reboot:"));
+  console.log(chalk.gray("  ./scripts/fix-display.sh"));
+  console.log("");
+  console.log(chalk.cyan("Or run manually:"));
+  console.log(chalk.gray("  sudo dpkg --configure -a"));
+  console.log(chalk.gray("  sudo apt update"));
+  console.log(chalk.gray("  sudo apt install -y gnome-core gdm3"));
+  console.log(chalk.gray("  sudo systemctl set-default graphical.target"));
+  console.log(chalk.gray("  sudo systemctl enable gdm3"));
+  console.log(chalk.gray("  sudo reboot"));
+  console.log("");
 }
 
 // ============================================================================
